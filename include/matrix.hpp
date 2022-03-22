@@ -3,8 +3,10 @@
 
 // interface for matrix data type
 
-#include <iostream>
-#include <vector>
+#ifndef BITS_H
+#define BITS_H
+#include <bits/stdc++.h>
+#endif
 
 using namespace std;
 
@@ -21,6 +23,13 @@ public:
   matrix(int, int, T);              // constructing matrix with given rows and cols and default value for elements
   matrix(const vector<T>&);         // constructing a matrix for 1-D vector
   matrix(const vector<vector<T>>&); // constructing a matrix for 2-D vector
+
+  T& operator()(int, int);          // |
+  T operator()(int, int) const;     // | allows matrix access as m(i, j)
+
+  matrix T() const;                 // transpose
+  void setRandom();
+  void setIdentity();
 
   friend istream& operator>>(istream&, matrix&);          // cin
   friend ostream& operator<<(ostream&, const matrix&);    // cout
@@ -40,9 +49,9 @@ public:
   // only applicable for square-matrices
   friend matrix operator^(const matrix&, int);   // matrix exponentiation
   matrix& operator^(int);
-  T det();                                       // matrix determinant
-  matrix adjoint();                              // adjoint matrix
-  matrix inv();                                  // inverse
+  T det() const;                                       // matrix determinant
+  matrix adjoint() const;                              // adjoint matrix
+  matrix inv() const;                                  // inverse
 };
 
 #endif // MATRIX_H
