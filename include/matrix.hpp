@@ -1,14 +1,33 @@
+// interface for matrix data type
+
 #ifndef MATRIX_H
 #define MATRIX_H
 
-// interface for matrix data type
-
 #ifndef BITS_H
 #define BITS_H
-#include <bits/stdc++.h>
-#endif
 
+#include <bits/stdc++.h>
 using namespace std;
+
+#endif // BITS_H
+
+#ifndef RANDOM_NUM
+#define RANDOM_NUM
+
+mt19937_64 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+template <class T>
+inline T rnd(T l = numeric_limits<T>::min(), T r = numeric_limits<T>::max()) {
+  if constexpr(is_integral_v<T>) {
+    uniform_int_distribution<T> dis(l, r);
+    return dis(rng);
+  } else if (is_floating_point_v<T>) {
+    uniform_real_distribution<T> dis(l, r);
+    return dis(rng);
+  }
+}
+
+#endif // RANDOM_NUM
 
 template <class T>
 class matrix {
