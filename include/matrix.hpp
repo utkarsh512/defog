@@ -3,74 +3,58 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#ifndef BITS_H
-#define BITS_H
-
 #include <bits/stdc++.h>
-using namespace std;
-
-#endif // BITS_H
-
-#ifndef RANDOM_NUM
-#define RANDOM_NUM
-
-mt19937_64 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
-
-template <class T>
-inline T rnd(T l = numeric_limits<T>::min(), T r = numeric_limits<T>::max()) {
-  if constexpr(is_integral_v<T>) {
-    uniform_int_distribution<T> dis(l, r);
-    return dis(rng);
-  } else if (is_floating_point_v<T>) {
-    uniform_real_distribution<T> dis(l, r);
-    return dis(rng);
-  }
-}
-
-#endif // RANDOM_NUM
+using namespace std; 
 
 template <class T>
 class matrix {
 private:
-  vector<vector<T>> data;
-  int row, col;
   bool init;
+  vector<vector<T>> data;
 
 public:
+  int row, col;
+
   matrix();                         // default constructor
-  matrix(int, int);                 // constructing matrix with given rows and cols (zero-initialization)
+  matrix(int, int);                 // constructing matrix with given rows and cols (identity for square matrices)
   matrix(int, int, T);              // constructing matrix with given rows and cols and default value for elements
   matrix(const vector<T>&);         // constructing a matrix for 1-D vector
   matrix(const vector<vector<T>>&); // constructing a matrix for 2-D vector
 
-  T& operator()(int, int);          // |
-  T operator()(int, int) const;     // | allows matrix access as m(i, j)
+  inline T& operator()(int x, int y)  { return data[x][y]; }
+  inline T operator()(int x, int y) const { return data[x][y]; }
 
-  matrix T() const;                 // transpose
-  void setRandom();
-  void setIdentity();
+  template <class U> friend istream& operator>>(istream&, matrix<U>&);          // cin
+  template <class U> friend ostream& operator<<(ostream&, const matrix<U>&);    // cout
 
-  friend istream& operator>>(istream&, matrix&);          // cin
-  friend ostream& operator<<(ostream&, const matrix&);    // cout
-  
-  friend matrix operator+(const matrix&, const matrix&);  // addition b/w two matrices
-  matrix& operator+(const matrix&);
-  friend matrix operator-(const matrix&, const matrix&);  // substraction b/w two matrices
-  matrix& operator-(const matrix&);
-  friend matrix operator*(const matrix&, const matrix&);  // multiplication b/w two matrices
-  matrix& operator*(const matrix&);
-  friend matrix operator*(const matrix&, T);              // |
-  friend matrix operator*(T, const matrix&);              // | scalar multiplcation
-  matrix& operator*(T);
-  friend matrix operator/(const matrix&, T);              // scalar division
-  matrix& operator/(T);
+  template <class U> friend matrix operator+(const matrix<U>&, const matrix<U>&); 
+  matrix& operator+=(const matrix&);                      // addition b/w two matrices
 
-  // only applicable for square-matrices
-  friend matrix operator^(const matrix&, int);   // matrix exponentiation
-  matrix& operator^(int);
-  T det() const;                                       // matrix determinant
-  matrix adjoint() const;                              // adjoint matrix
-  matrix inv() const;                                  // inverse
+  template <class U> friend matrix operator-(const matrix<U>&, const matrix<U>&); 
+  matrix& operator-=(const matrix&);                      // substraction b/w two matrices
+
+  matrix operator-();                                     // negation
+
+  template <class U> friend matrix operator*(const matrix<U>&, const matrix<U>&); 
+  matrix& operator*=(const matrix&);                      // multiplication b/w two matrices
+
+  template <class U> friend matrix operator*(const matrix<U>&, U);          
+  template <class U> friend matrix operator*(U, const matrix<U>&);            
+  matrix& operator*=(T);                                  // scalar multiplcation
+
+  template <class U> matrix operator/(const matrix<U>&, T);        
+  matrix& operator/=(T);                                  // scalar division
+
+  // following methods valid for square-matrices only
+
+  template <class U> friend matrix operator^(const matrix<U>&, int);           
+  matrix& operator^=(int);                                // matrix exponentiation
+
+  T det() const;                                          // matrix determinant
+  matrix adjoint() const;                                 // adjoint matrix
+  matrix inv() const;                                     // inverse
 };
+
+#include "matrix.ipp"
 
 #endif // MATRIX_H
