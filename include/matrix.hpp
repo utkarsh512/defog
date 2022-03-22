@@ -47,12 +47,12 @@ public:
 
   // following methods valid for square-matrices only
 
-  template <class U> friend matrix operator^(const matrix<U>&, int);           
-  matrix& operator^=(int);                                // matrix exponentiation
+  // template <class U> friend matrix operator^(const matrix<U>&, int);           
+  // matrix& operator^=(int);                                // matrix exponentiation
 
-  T det() const;                                          // matrix determinant
-  matrix adjoint() const;                                 // adjoint matrix
-  matrix inv() const;                                     // inverse
+  // T det() const;                                          // matrix determinant
+  // matrix adjoint() const;                                 // adjoint matrix
+  // matrix inv() const;                                     // inverse
 };
 
 #include "matrix.ipp"
