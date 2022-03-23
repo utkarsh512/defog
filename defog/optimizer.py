@@ -1,4 +1,4 @@
-""" optimizer.py - Module for computing regularized depth map via energy minimization
+"""optimizer.py - Module for computing regularized depth map via energy minimization
 
 Author: Utkarsh Patel (18EC35034)
 This module is part of IP lab final project
@@ -85,3 +85,46 @@ def energy(depth_map: np.ndarray,
     prior_term = ((diff_t @ diff) / variance).sum()
     smoothening_term = (b_h * phi_h + b_v * phi_v).sum() * lambda_
     return prior_term + smoothening_term
+
+def converged(cur_val: np.ndarray,
+              prv_val: np.ndarray,
+              tolerance: float) -> bool:
+    diff = cur_val - prv_val
+    norm = np.linalg.norm(diff)
+    return norm < tolerance
+
+def optimize(depth_map: np.ndarray,
+             prior_maps: np.ndarray,
+             max_iter: int,
+             tolerance: float,
+             lambda_: float,
+             threshold: float,
+             v_max: float) -> float:
+    """Computing a labeling extremely close to global solution
+    via expansion-move algorithm
+
+    :param depth_map: depth map (two-dimensional)
+    :param prior_maps: collection of all prior maps (three-dimensional)
+    :param max_iter: maximum number of iterations to run
+    :param tolerance: error until convergence
+    :param lambda_: regularization term (Refer to pg. 6, eqn. 16)
+    :param threshold: `T` in pg. 5, eqn, 15
+    :param v_max: upper bound for edge-preserving potential
+    """
+    cur_depth_map = depth_map.copy()
+    prv_depth_map = depth_map.copy()
+    it = 0
+    while max_iter or not converged(cur_depth_map, prv_depth_map, tolerance):
+        prv_depth_map = cur_depth_map.copy()
+        delta_h, delta_v = depth_map_delta(prv_depth_map)
+        b_h, b_v = line_field(delta_h, delta_v, threshold)
+        # todo: cur_depth_map = expansion_move()
+        if it % 100 == 0:
+            energy_val = energy(cur_depth_map, prior_maps, lambda_,
+                                threshold, v_max)
+            energy_val = np.around(energy_val, decimals=4)
+            print(f'[*] iter = {iter:7}, energy = {energy_val}')
+        max_iter -= 1
+        it += 1
+
+    return cur_depth_map
