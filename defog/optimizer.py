@@ -5,6 +5,7 @@ This module is part of IP lab final project
 """
 
 import numpy as np
+from .graph import expansion_move
 
 def depth_map_delta(depth_map: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Computes absolute gradient of depth map
