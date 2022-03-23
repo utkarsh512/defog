@@ -60,3 +60,28 @@ def noise_variance(prior_maps: np.ndarray,
     variance = (prior_maps - depth_map) / (depth_map.shape[0] * depth_map.shape[1])
     variance = np.linalg.norm(variance, axis=(1, 2))
     return variance
+
+def energy(depth_map: np.ndarray,
+           prior_maps: np.ndarray,
+           lambda_: float,
+           threshold: float,
+           v_max: float) -> float:
+    """Computes energy for given prior maps and depth map
+
+    (Refer to pg. 6, eqn. 16)
+
+    :param depth_map: depth map (two-dimensional)
+    :param prior_maps: collection of all prior maps (three-dimensional)
+    :param lambda_: regularization term
+    :param threshold: `T` in pg. 5, eqn. 15
+    :param v_max: upper bound for edge-preserving potential
+    """
+    diff = prior_maps - depth_map                    # (pi - D)
+    diff_t = np.array([x.transpose() for x in diff]) # (pi - D).T
+    variance = noise_variance(prior_maps, depth_map)
+    delta_h, delta_v = depth_map_delta(depth_map)
+    b_h, b_v = line_field(delta_h, delta_v, threshold)
+    phi_h, phi_v = base_potential(delta_h, delta_v, v_max)
+    prior_term = ((diff_t @ diff) / variance).sum()
+    smoothening_term = (b_h * phi_h + b_v * phi_v).sum() * lambda_
+    return prior_term + smoothening_term
