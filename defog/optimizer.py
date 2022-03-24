@@ -98,7 +98,7 @@ def optimize(depth_map: np.ndarray,
              tolerance: float,
              lambda_: float,
              threshold: float,
-             v_max: float) -> float:
+             v_max: float) -> np.ndarray:
     """Computing a labeling extremely close to global solution
     via expansion-move algorithm
 
