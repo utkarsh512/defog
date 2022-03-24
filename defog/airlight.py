@@ -40,5 +40,5 @@ def atmospheric_luminance(in_image: np.ndarray,
     :param in_image: input image (three-dimensional)
     :param fog_opaque_region_: pixels in fog-opaque region
     """
-    return tuple(np.sum(in_image, axis=(1, 2), where=fog_opaque_region_) / fog_opaque_region_.sum())
+    return tuple(np.sum(in_image, axis=(0, 1), where=fog_opaque_region_) / fog_opaque_region_.sum())
 
