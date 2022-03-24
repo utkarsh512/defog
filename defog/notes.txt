@@ -5,7 +5,7 @@ Assumptions
 -----------
 
 For the notes we assume the following are true:
-    * The dimension of the input image is (3, N, M). Here, 3 denotes that there are three channels (RGB).
+    * The dimension of the input image is (N, M, 3). Here, 3 denotes that there are three channels (BGR).
     * There are a total of m prior maps known
 
 
@@ -19,7 +19,7 @@ Variables
 ---------
 
 ip_image
-    Variable `ip_image` is used to represent the input image as a 3-D numpy array with dimensions (3, N, M)
+    Variable `ip_image` is used to represent the input image as a 3-D numpy array with dimensions (N, M, 3)
 
 edge_image
     Variable `edge_image` is used to represent the edge image of the input image.
@@ -27,7 +27,7 @@ edge_image
 
 op_image
     Variable `op_image` is used to represent the image obtained by using the algorithm.
-    It is a 3-D numpy array with dimensions (3, N, M)
+    It is a 3-D numpy array with dimensions (N, M, 3)
 
 prior_maps
     Variable `prior_maps` is used to represent collection of all the prior maps p_i(x), i = 1, 2, ..., m.
