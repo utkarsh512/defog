@@ -1,19 +1,29 @@
 NOTES ON VARIABLES AND THEIR DIMENSIONS
+=======================================
 
-==================================================
+Assumptions
+-----------
 
 For the notes we assume the following are true:
     * The dimension of the input image is (3, N, M). Here, 3 denotes that there are three channels (RGB).
     * There are a total of m prior maps known
 
-==================================================
+
+Caution
+-------
+
+* In the implementation, it is assumed that `dtype` of `depth_map` is `int`, not `float`.
+
+
+Variables
+---------
 
 ip_image
     Variable `ip_image` is used to represent the input image as a 3-D numpy array with dimensions (3, N, M)
 
 edge_image
     Variable `edge_image` is used to represent the edge image of the input image.
-    It is a 3-D numpy array with dimensions (3, N, M)
+    It is a 2-D numpy array with dimensions (N, M)
 
 op_image
     Variable `op_image` is used to represent the image obtained by using the algorithm.
@@ -41,3 +51,4 @@ delta_h, delta_v
     Variable `delta_h` and `delta_v` are used to represent the absolute gradient of depth map in horizontal and vertical
     direction respectively.
     Both of them are 2-D numpy arrays with dimesions (N, M).
+

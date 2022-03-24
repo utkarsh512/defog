@@ -1,7 +1,5 @@
-"""optimizer.py - Module for computing regularized depth map via energy minimization
-
-Author: Utkarsh Patel (18EC35034)
-This module is part of IP lab final project
+"""
+optimizer.py - Module for computing regularized depth map via energy minimization
 """
 
 import numpy as np
