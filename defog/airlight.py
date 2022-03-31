@@ -49,7 +49,7 @@ def fog_opaque_region(edge_image: np.ndarray,
 
 
 def atmospheric_luminance(in_image: np.ndarray,
-                          fog_opaque_region_: np.ndarray) -> tuple[float, float, float]:
+                          fog_opaque_region_: np.ndarray):
     """Computing color vectors of the atmospheric luminance
 
     (Refer to pg. 7, eqn. 21)
