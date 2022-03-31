@@ -56,9 +56,12 @@ def noise_variance(prior_maps: np.ndarray,
     :param prior_maps: collection of all prior maps (three-dimensional)
     :param depth_map: depth map (two-dimensional)
     """
-    variance = (prior_maps - depth_map) / (depth_map.shape[0] * depth_map.shape[1])
-    variance = np.linalg.norm(variance, axis=(1, 2))
-    return variance
+    vars = list()
+    for i in range(prior_maps.shape[0]):
+        vars.append(np.linalg.norm((prior_maps[i, :, :] - depth_map) / (depth_map.shape[0] * depth_map.shape[1])))
+    #variance = (prior_maps - depth_map) / (depth_map.shape[0] * depth_map.shape[1])
+    #variance = np.linalg.norm(variance, axis=(1, 2))
+    return np.array(vars)
 
 def energy(depth_map: np.ndarray,
            prior_maps: np.ndarray,
