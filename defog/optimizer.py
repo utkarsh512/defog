@@ -5,7 +5,7 @@ optimizer.py - Module for computing regularized depth map via energy minimizatio
 import numpy as np
 from .graph import expansion_move
 
-def depth_map_delta(depth_map: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def depth_map_delta(depth_map: np.ndarray):
     """Computes absolute gradient of depth map
     along horizontal and vertical direction
 
@@ -19,7 +19,7 @@ def depth_map_delta(depth_map: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 def line_field(delta_h: np.ndarray,
                delta_v: np.ndarray,
-               threshold: float) -> tuple[np.ndarray, np.ndarray]:
+               threshold: float):
     """Computes horizontal and vertical component of line field
 
     (Refer to pg. 5, eqn. 15)
@@ -34,7 +34,7 @@ def line_field(delta_h: np.ndarray,
 
 def base_potential(delta_h: np.ndarray,
                    delta_v: np.ndarray,
-                   v_max: float) -> tuple[np.ndarray, np.ndarray]:
+                   v_max: float):
     """Computes horizontal and vertical component of base potential
 
     (Refer to pg. 5, eqn. 15)
