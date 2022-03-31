@@ -40,7 +40,7 @@ def gen_prior_map(ip_image: np.ndarray, nbr_size: int) -> np.ndarray:
     return np.min(np.min(channel_B, channel_G), channel_R)
 
 
-def gen_prior_maps(ip_image: np.ndarray, nbr_sizes: list[int]) -> np.ndarray:
+def gen_prior_maps(ip_image: np.ndarray, nbr_sizes: list) -> np.ndarray:
     """Generates all prior maps for given collection of patch sizes"""
     prior_maps = list()
     for nbr_size in nbr_sizes:
