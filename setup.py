@@ -13,9 +13,7 @@ REQUIRES_PYTHON = '>=3.7.0'
 VERSION = None
 
 # Packages required
-REQUIRED = [
-    'numpy', 'opencv-python', 'pymaxflow', 'pil'
-]
+REQUIRED = ['numpy', 'opencv-python', 'PyMaxflow', 'scipy', 'Pillow']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
