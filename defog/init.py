@@ -10,7 +10,6 @@ prior_map_cache = None
 
 def isvalid(x: int, y: int, w: int, h: int):
     """Check whether (x, y) lies inside (w, h)"""
-    print("[-]", x, y, w, h)
     return x >= 0 and x < w and y >= 0 and y < h
 
 
@@ -123,4 +122,10 @@ def get_depth_map(ip_image: np.ndarray, x: int, y: int, nbr_sizes: list):
 
 def init_depth_map(ip_image: np.ndarray, nbr_sizes: list):
     """Computes initial value for depth map"""
-    return np.fromfunction(lambda i, j: get_depth_map(ip_image, i, j, nbr_sizes), (ip_image.shape[0], ip_image.shape[1]))
+    depth_map = [[0 for j in range(ip_image.shape[1])] for i in range(ip_image.shape[0])]
+    for i in range(ip_image.shape[0]):
+        for j in range(ip_image.shape[1]):
+            depth_image[i][j] = get_depth_map(ip_image, i, j, nbr_sizes)
+    depth_map = np.array(depth_map)
+    return depth_map
+    #return np.fromfunction(lambda i, j: get_depth_map(ip_image, i, j, nbr_sizes), (ip_image.shape[0], ip_image.shape[1]))
