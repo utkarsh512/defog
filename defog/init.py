@@ -8,7 +8,7 @@ from copy import deepcopy
 prior_map_cache = None
 
 
-def isvalid(x, y, w, h):
+def isvalid(x: int, y: int, w: int, h: int):
     """Check whether (x, y) lies inside (w, h)"""
     return x >= 0 and x < w and y >= 0 and y < h
 
