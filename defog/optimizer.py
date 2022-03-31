@@ -115,9 +115,18 @@ def optimize(depth_map: np.ndarray,
     it = 0
     while max_iter or not converged(cur_depth_map, prv_depth_map, tolerance):
         prv_depth_map = cur_depth_map.copy()
-        delta_h, delta_v = depth_map_delta(prv_depth_map)
-        b_h, b_v = line_field(delta_h, delta_v, threshold)
+        variance = noise_variance(prior_maps, prv_depth_map)
+        # delta_h, delta_v = depth_map_delta(prv_depth_map)
+        # b_h, b_v = line_field(delta_h, delta_v, threshold)
         # todo: cur_depth_map = expansion_move()
+        cur_depth_map = expansion_move(prv_depth_map,
+                                       cur_depth_map,
+                                       prior_maps,
+                                       1,
+                                       lambda_,
+                                       threshold,
+                                       v_max,
+                                       variance)
         if it % 100 == 0:
             energy_val = energy(cur_depth_map, prior_maps, lambda_,
                                 threshold, v_max)
