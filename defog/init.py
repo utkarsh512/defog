@@ -6,7 +6,7 @@ import numpy as np
 from copy import deepcopy
 
 prior_map_cache = None
-EPS = 1e-7
+EPS = 1e-5
 
 
 def isvalid(x: int, y: int, w: int, h: int):
@@ -98,7 +98,7 @@ def get_weights(ip_image: np.ndarray, x: int, y: int, nbr_sizes: list):
     """Computes W(x) - pg. 6, eqn. 20"""
     A = list()
     for nbr_size in nbr_sizes:
-        A.append(1.0 / estimate_variance(ip_image, x, y, nbr_size) + EPS)
+        A.append(1.0 / (estimate_variance(ip_image, x, y, nbr_size) + EPS))
     A = np.array(A)
     A = A.reshape(1, len(nbr_sizes))
     return np.linalg.inv(A.T @ A) @ A.T
@@ -126,7 +126,7 @@ def init_depth_map(ip_image: np.ndarray, nbr_sizes: list):
     depth_map = [[0 for j in range(ip_image.shape[1])] for i in range(ip_image.shape[0])]
     for i in range(ip_image.shape[0]):
         for j in range(ip_image.shape[1]):
-            depth_image[i][j] = get_depth_map(ip_image, i, j, nbr_sizes)
+            depth_map[i][j] = get_depth_map(ip_image, i, j, nbr_sizes)
     depth_map = np.array(depth_map)
     return depth_map
     #return np.fromfunction(lambda i, j: get_depth_map(ip_image, i, j, nbr_sizes), (ip_image.shape[0], ip_image.shape[1]))
