@@ -6,7 +6,6 @@ import numpy as np
 from copy import deepcopy
 
 prior_map_cache = None
-EPS = 1e-5
 
 
 def isvalid(x: int, y: int, w: int, h: int):
@@ -98,7 +97,7 @@ def get_weights(ip_image: np.ndarray, x: int, y: int, nbr_sizes: list):
     """Computes W(x) - pg. 6, eqn. 20"""
     A = list()
     for nbr_size in nbr_sizes:
-        A.append(1.0 / (estimate_variance(ip_image, x, y, nbr_size) + EPS))
+        A.append(1.0 / estimate_variance(ip_image, x, y, nbr_size)
     A = np.array(A)
     A = A.reshape(1, len(nbr_sizes))
     return np.linalg.inv(A.T @ A) @ A.T
