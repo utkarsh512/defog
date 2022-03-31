@@ -6,6 +6,7 @@ import numpy as np
 from copy import deepcopy
 
 prior_map_cache = None
+EPS = 1e-7
 
 
 def isvalid(x: int, y: int, w: int, h: int):
@@ -37,7 +38,7 @@ def gen_prior_map(ip_image: np.ndarray, nbr_size: int) -> np.ndarray:
     channel_B = np.array(minimum_neighbor(ip_image[:, :, 0].tolist(), nbr_size))
     channel_G = np.array(minimum_neighbor(ip_image[:, :, 1].tolist(), nbr_size))
     channel_R = np.array(minimum_neighbor(ip_image[:, :, 2].tolist(), nbr_size))
-    return np.min(np.min(channel_B, channel_G), channel_R)
+    return np.minimum(np.minimum(channel_B, channel_G), channel_R)
 
 
 def gen_prior_maps(ip_image: np.ndarray, nbr_sizes: list) -> np.ndarray:
@@ -97,7 +98,7 @@ def get_weights(ip_image: np.ndarray, x: int, y: int, nbr_sizes: list):
     """Computes W(x) - pg. 6, eqn. 20"""
     A = list()
     for nbr_size in nbr_sizes:
-        A.append(1.0 / estimate_variance(ip_image, x, y, nbr_size))
+        A.append(1.0 / estimate_variance(ip_image, x, y, nbr_size) + EPS)
     A = np.array(A)
     A = A.reshape(1, len(nbr_sizes))
     return np.linalg.inv(A.T @ A) @ A.T
