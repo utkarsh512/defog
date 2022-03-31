@@ -3,7 +3,21 @@ airlight.py - Module for airlight estimation
 """
 
 import numpy as np
-from .constants import MAX_INTENSITY_LEVEL
+
+def get_edge_image(ip_image):
+    grad_h = np.abs(np.gradient(ip_image, axis=0))
+    grad_v = np.abs(np.gradient(ip_image, axis=1))
+    return grad_h + grad_v
+
+
+def preprocess(depth_map):
+    """Preprocessing depth map"""
+    x = depth_map.copy()
+    x += 0.5;
+    x = np.max(x, 255)
+    x = np.min(x, 0)
+    return x.astype(int)
+
 
 def histogram(edge_image: np.ndarray,
               depth_map: np.ndarray,
@@ -19,6 +33,7 @@ def histogram(edge_image: np.ndarray,
     hist = (edge_image * (depth_map == depth_label)).sum()
     return hist
 
+
 def fog_opaque_region(edge_image: np.ndarray,
                       depth_map: np.ndarray) -> np.ndarray:
     """Generating fog-opaque regions
@@ -28,8 +43,10 @@ def fog_opaque_region(edge_image: np.ndarray,
     :param edge_image: edge image of input image (two-dimensional)
     :param depth_map: estimated depth map (two-dimensional)
     """
-    hist = np.fromfunction(lambda i: histogram(edge_image, depth_map, i), (MAX_INTENSITY_LEVEL,))
-    return depth_map == np.argmin(hist)
+    preprocessed_depth_map = preprocess(depth_map)
+    hist = np.fromfunction(lambda i: histogram(edge_image, preprocessed_depth_map, i), (256,))
+    return preprocessed_depth_map == np.argmin(hist)
+
 
 def atmospheric_luminance(in_image: np.ndarray,
                           fog_opaque_region_: np.ndarray) -> tuple[float, float, float]:
