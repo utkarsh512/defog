@@ -118,6 +118,7 @@ def get_depth_map(ip_image: np.ndarray, x: int, y: int, nbr_sizes: list):
     """Computes D(x) - pg. 6, eqn. 20"""
     W = get_weights(ip_image, x, y, nbr_sizes)
     P = get_prior_maps(ip_image, x, y, nbr_sizes)
+    print(f"W:{W.shape}, P:{P.shape}")
     return W @ P
 
 
