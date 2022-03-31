@@ -57,6 +57,7 @@ def noise_variance(prior_maps: np.ndarray,
     :param depth_map: depth map (two-dimensional)
     """
     vars = list()
+    print(f"P:{prior_maps.shape}, D:{depth_map.shape}")
     for i in range(prior_maps.shape[0]):
         vars.append(np.linalg.norm((prior_maps[i, :, :] - depth_map) / (depth_map.shape[0] * depth_map.shape[1])))
     #variance = (prior_maps - depth_map) / (depth_map.shape[0] * depth_map.shape[1])
