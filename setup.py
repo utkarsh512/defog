@@ -14,7 +14,7 @@ VERSION = None
 
 # Packages required
 REQUIRED = [
-    'numpy', 'opencv-python', 'maxflow'
+    'numpy', 'opencv-python', 'pymaxflow', 'pil'
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
