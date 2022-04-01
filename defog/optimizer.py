@@ -17,6 +17,7 @@ def depth_map_delta(depth_map: np.ndarray):
     delta_v = np.abs(np.gradient(depth_map, axis=1))
     return delta_h, delta_v
 
+
 def line_field(delta_h: np.ndarray,
                delta_v: np.ndarray,
                threshold: float):
@@ -32,6 +33,7 @@ def line_field(delta_h: np.ndarray,
     b_v = 1 - (delta_v - threshold >= 0).astype(float)
     return b_h, b_v
 
+
 def base_potential(delta_h: np.ndarray,
                    delta_v: np.ndarray,
                    v_max: float):
@@ -43,9 +45,10 @@ def base_potential(delta_h: np.ndarray,
     :param delta_v: absolute gradient of depth map along vertical direction (two-dimensional)
     :param v_max: upper bound for edge-preserving potential
     """
-    phi_h = np.min(delta_h, v_max)
-    phi_v = np.min(delta_v, v_max)
+    phi_h = np.minimum(delta_h, v_max)
+    phi_v = np.minimum(delta_v, v_max)
     return phi_h, phi_v
+
 
 def noise_variance(prior_maps: np.ndarray,
                    depth_map: np.ndarray) -> np.ndarray:
@@ -60,9 +63,8 @@ def noise_variance(prior_maps: np.ndarray,
     print(f"P:{prior_maps.shape}, D:{depth_map.shape}")
     for i in range(prior_maps.shape[0]):
         vars.append(np.linalg.norm((prior_maps[i, :, :] - depth_map) / (depth_map.shape[0] * depth_map.shape[1])))
-    #variance = (prior_maps - depth_map) / (depth_map.shape[0] * depth_map.shape[1])
-    #variance = np.linalg.norm(variance, axis=(1, 2))
     return np.array(vars)
+
 
 def energy(depth_map: np.ndarray,
            prior_maps: np.ndarray,
@@ -89,12 +91,14 @@ def energy(depth_map: np.ndarray,
     smoothening_term = (b_h * phi_h + b_v * phi_v).sum() * lambda_
     return prior_term + smoothening_term
 
+
 def converged(cur_val: np.ndarray,
               prv_val: np.ndarray,
               tolerance: float) -> bool:
     diff = cur_val - prv_val
     norm = np.linalg.norm(diff)
     return norm < tolerance
+
 
 def optimize(depth_map: np.ndarray,
              prior_maps: np.ndarray,
@@ -117,26 +121,22 @@ def optimize(depth_map: np.ndarray,
     cur_depth_map = depth_map.copy()
     prv_depth_map = depth_map.copy()
     it = 0
-    while max_iter or not converged(cur_depth_map, prv_depth_map, tolerance):
+    while max_iter > 0 and not converged(cur_depth_map, prv_depth_map, tolerance):
         prv_depth_map = cur_depth_map.copy()
         variance = noise_variance(prior_maps, prv_depth_map)
-        # delta_h, delta_v = depth_map_delta(prv_depth_map)
-        # b_h, b_v = line_field(delta_h, delta_v, threshold)
-        # todo: cur_depth_map = expansion_move()
         cur_depth_map = expansion_move(prv_depth_map,
                                        cur_depth_map,
                                        prior_maps,
-                                       1,
+                                       it + 1,
                                        lambda_,
                                        threshold,
                                        v_max,
                                        variance)
-        if it % 100 == 0:
-            energy_val = energy(cur_depth_map, prior_maps, lambda_,
-                                threshold, v_max)
-            energy_val = np.around(energy_val, decimals=4)
-            print(f'[*] iter = {iter:7}, energy = {energy_val}')
+
+        energy_val = energy(cur_depth_map, prior_maps, lambda_,
+                            threshold, v_max)
+        energy_val = np.around(energy_val, decimals=4)
+        print(f'[*] iter = {it + 1:7}, energy = {energy_val}')
         max_iter -= 1
         it += 1
-
     return cur_depth_map
