@@ -5,17 +5,19 @@ airlight.py - Module for airlight estimation
 import numpy as np
 
 def get_edge_image(ip_image):
-    grad_h = np.abs(np.gradient(ip_image, axis=0))
-    grad_v = np.abs(np.gradient(ip_image, axis=1))
+    """Computes edge image for an RGB image"""
+    bv = np.array([0.11, 0.59, 0.30]).reshape(3, 1)
+    intensity = np.squeeze(ip_image @ bv)
+    grad_h = np.abs(np.gradient(intensity, axis=0))
+    grad_v = np.abs(np.gradient(intensity, axis=1))
     return grad_h + grad_v
 
 
 def preprocess(depth_map):
     """Preprocessing depth map"""
     x = depth_map.copy()
-    x += 0.5;
-    x = np.max(x, 255)
-    x = np.min(x, 0)
+    x = np.maximum(x, 255)
+    x = np.minimum(x, 0)
     return x.astype(int)
 
 
@@ -57,5 +59,7 @@ def atmospheric_luminance(in_image: np.ndarray,
     :param in_image: input image (three-dimensional)
     :param fog_opaque_region_: pixels in fog-opaque region
     """
-    return tuple(np.sum(in_image, axis=(0, 1), where=fog_opaque_region_) / fog_opaque_region_.sum())
-
+    atm_lum = list()
+    for c in range(3):
+        atm_lum.append(np.sum(in_image[:, :, c], where=fog_opaque_region_) / fog_opaque_region_.sum())
+    return tuple(atm_lum)
