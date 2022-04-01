@@ -60,7 +60,6 @@ def noise_variance(prior_maps: np.ndarray,
     :param depth_map: depth map (two-dimensional)
     """
     vars = list()
-    print(f"P:{prior_maps.shape}, D:{depth_map.shape}")
     for i in range(prior_maps.shape[0]):
         vars.append(np.linalg.norm((prior_maps[i, :, :] - depth_map) / (depth_map.shape[0] * depth_map.shape[1])))
     return np.array(vars)
@@ -92,18 +91,9 @@ def energy(depth_map: np.ndarray,
     return prior_term + smoothening_term
 
 
-def converged(cur_val: np.ndarray,
-              prv_val: np.ndarray,
-              tolerance: float) -> bool:
-    diff = cur_val - prv_val
-    norm = np.linalg.norm(diff)
-    return norm < tolerance
-
-
 def optimize(depth_map: np.ndarray,
              prior_maps: np.ndarray,
              max_iter: int,
-             tolerance: float,
              lambda_: float,
              threshold: float,
              v_max: float) -> np.ndarray:
@@ -113,7 +103,6 @@ def optimize(depth_map: np.ndarray,
     :param depth_map: depth map (two-dimensional)
     :param prior_maps: collection of all prior maps (three-dimensional)
     :param max_iter: maximum number of iterations to run
-    :param tolerance: error until convergence
     :param lambda_: regularization term (Refer to pg. 6, eqn. 16)
     :param threshold: `T` in pg. 5, eqn, 15
     :param v_max: upper bound for edge-preserving potential
@@ -121,7 +110,7 @@ def optimize(depth_map: np.ndarray,
     cur_depth_map = depth_map.copy()
     prv_depth_map = depth_map.copy()
     it = 0
-    while max_iter > 0 and not converged(cur_depth_map, prv_depth_map, tolerance):
+    while max_iter > 0:
         prv_depth_map = cur_depth_map.copy()
         variance = noise_variance(prior_maps, prv_depth_map)
         cur_depth_map = expansion_move(prv_depth_map,
