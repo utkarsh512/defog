@@ -128,4 +128,3 @@ def init_depth_map(ip_image: np.ndarray, nbr_sizes: list):
             depth_map[i][j] = get_depth_map(ip_image, i, j, nbr_sizes)
     depth_map = np.array(depth_map)
     return depth_map
-    #return np.fromfunction(lambda i, j: get_depth_map(ip_image, i, j, nbr_sizes), (ip_image.shape[0], ip_image.shape[1]))
