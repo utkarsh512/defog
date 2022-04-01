@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 from setuptools import setup
 import io
 import os
@@ -13,7 +14,7 @@ REQUIRES_PYTHON = '>=3.7.0'
 VERSION = None
 
 # Packages required
-REQUIRED = ['numpy', 'opencv-python', 'PyMaxflow', 'scipy', 'Pillow']
+REQUIRED = ['numpy', 'opencv-python', 'PyMaxflow', 'tqdm']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
