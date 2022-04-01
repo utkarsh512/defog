@@ -4,35 +4,7 @@ graph.py - using min-cut max-flow algorithm to minimize energy
 
 import maxflow as mf
 import numpy as np
-import time
-import sys
-import os.path
-from random import shuffle
-from PIL import Image
-
-
-def image_to_array(img):
-    '''input: path to image
-       output: array of grayscale
-       reference: https://stackoverflow.com/questions/40727793/how-to-convert-a-grayscale-image-into-a-list-of-pixel-values
-       '''
-    # from PIL import Image
-    img = Image.open(img).convert('L')
-    w, h = img.size
-
-    data = list(img.getdata())
-    data = [data[off:off + w] for off in range(0, w * h, w)]
-
-    return data
-
-
-def arr_to_image(img_work, fname):
-    '''Saves image arr as image'''
-    temp = np.asarray(img_work)
-    im = Image.fromarray(temp);  # https://stackoverflow.com/questions/33658709/convert-an-array-into-image
-    # img_work was originally a list
-    im.save(fname)
-    return 0
+from tqdm import tqdm
 
 
 def calculate_energy(img_work, prior_maps: np.ndarray, lambda_: float, threshold: float, v_max: float,
@@ -156,7 +128,7 @@ def alpha_beta_swap_new(alpha, beta, img_work, prior_maps: np.ndarray, lambda_: 
     return img_work
 
 
-def expansion_move(img_orig, img_work, prior_maps: np.ndarray, cycles, lambda_: float, threshold: float, v_max: float,
+def expansion_move(img_orig, img_work, prior_maps: np.ndarray, it, lambda_: float, threshold: float, v_max: float,
                    sigma: np.ndarray):
     '''This methods implements the energy minimization via alpha-beta-swaps
        img_orig: is original input image (Depth map)
@@ -165,34 +137,23 @@ def expansion_move(img_orig, img_work, prior_maps: np.ndarray, cycles, lambda_: 
        lambda: weight of smoothing term (eqn 15)
        threshold: T (eqn 15)
        v_max: (eqn 15), maximum value of V in the graph.
-       sigma: (eqn 16), prior_maps' sigma values, 1D array equal to depth of prior_maps (eqn 16)
-       cycles: how often to iterate over all labels'''
-
-    import time
-    # find all labels of image
-    start = time.time()
+       sigma: (eqn 16), prior_maps' sigma values, 1D array equal to depth of prior_maps (eqn 16)'''
     labels = []
     for i in range(0, len(img_orig)):
         for j in range(0, len(img_orig[0])):
             if img_orig[i][j] not in labels:
                 labels.append(img_orig[i][j])  # The labels are being created according to the intensity value
     labels = np.array(labels)
-    stop = time.time()
-    print(stop - start)
     T = 0
-    # do iteration of all pairs a few times
-    for u in range(0, cycles):
+    n_labels = len(labels)
+    with tqdm(total=(n_labels * (n_labels - 1) // 2), desc=f'iter {it}') as pbar:
         # shuffle(labels)
         # iterate over all pairs of labels
         for i in range(0, len(labels) - 1):
             for j in range(i + 1, len(labels)):
                 # computing intensive swapping and graph cutting part
-                # img_work  = alpha_beta_swap_new(labels[i],labels[j], img_orig, img_work)
                 img_work = alpha_beta_swap_new(labels[i], labels[j], img_work, prior_maps, lambda_, threshold, v_max,
                                                sigma)
-                # user output and interims result image
-        print(str(u + 1) + "\t\t\t", calculate_energy(img_work, prior_maps, lambda_, threshold, v_max, sigma))
-        # print("Energy after " + str(u+1) + "/" + str(cycles) + " cylces:", calculate_energy(img_orig, img_work))
-        # arr_to_image(img_work, "bad_denoised_"+output_name+"_"+str(u+1)+"_cycle"+".png")
+                pbar.update(1)
 
     return img_work
