@@ -5,6 +5,7 @@ optimizer.py - Module for computing regularized depth map via energy minimizatio
 import numpy as np
 from .graph import expansion_move
 
+
 def depth_map_delta(depth_map: np.ndarray):
     """Computes absolute gradient of depth map
     along horizontal and vertical direction
@@ -121,7 +122,6 @@ def optimize(depth_map: np.ndarray,
                                        threshold,
                                        v_max,
                                        variance)
-
         energy_val = energy(cur_depth_map, prior_maps, lambda_,
                             threshold, v_max)
         energy_val = np.around(energy_val, decimals=4)
