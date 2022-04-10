@@ -30,7 +30,7 @@ def V_p_q(label1, label2, lambda_: float, threshold: float, v_max: float) -> flo
     # Returns V_p_q when we calculate between just D(levels), and not the neighbourhood
     # V_p_q is calculated differently for at each point and between edges
     # value = lambda_*min((label1 - label2),v_max)*(1 - (abs(label1 - label2) - threshold >= 0).astype(float))
-    value = lambda_ * min((label1 - label2), v_max) * (1 - (abs(label1 - label2) - threshold >= 0))
+    value = lambda_ * min((label1 - label2), v_max) * (1 - ((abs(label1 - label2) - threshold) >= 0))
     return value
 
 
