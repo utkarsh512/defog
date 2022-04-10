@@ -10,7 +10,7 @@ def get_edge_image(ip_image):
     intensity = np.squeeze(ip_image @ bv)
     grad_h = np.abs(np.gradient(intensity, axis=0))
     grad_v = np.abs(np.gradient(intensity, axis=1))
-    return grad_h + grad_v
+    return np.maximum(grad_h, grad_v)
 
 
 def preprocess(depth_map):
